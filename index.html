@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Conuco — Finanzas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --cibao-green:#1F4D2C;
+    --cibao-green-light:#2E6B3F;
+    --papaya:#E8722C;
+    --banana:#F4B942;
+    --cream:#FBF3E7;
+    --paper:#F5ECDC;
+    --ink:#2B2620;
+    --guava:#C1495A;
+    --line:#DDD0B4;
+    --shadow: 0 2px 0 rgba(43,38,32,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(31,77,44,0.025) 0px, rgba(31,77,44,0.025) 2px, transparent 2px, transparent 14px);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 0;}
+
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:26px;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:54px;height:54px;border-radius:50%;background:var(--cibao-green);
+    border:3px dashed var(--banana);display:flex;align-items:center;justify-content:center;
+    color:var(--cream);font-family:'Alfa Slab One',cursive;font-size:11px;line-height:1;
+    text-align:center;transform:rotate(-8deg);flex-shrink:0;
+  }
+  .brand h1{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:26px;letter-spacing:0.5px;margin:0;color:var(--cibao-green);}
+  .brand p{margin:2px 0 0;font-size:12.5px;color:#6b5f4d;letter-spacing:0.3px;}
+  .head-right{display:flex;align-items:center;gap:10px;}
+  .month-badge{font-family:'Space Mono',monospace;background:var(--ink);color:var(--cream);padding:9px 16px;border-radius:999px;font-size:13px;text-transform:capitalize;}
+  .sync-dot{width:9px;height:9px;border-radius:50%;background:#B3A789;flex-shrink:0;}
+  .sync-dot.ok{background:var(--cibao-green);}
+  .sync-dot.err{background:var(--guava);}
+  .gear{
+    width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:transparent;
+    cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
+  }
+  .gear:hover{background:rgba(43,38,32,0.06);}
+
+  nav.tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+  nav.tabs button{
+    font-family:'Work Sans',sans-serif;font-weight:700;font-size:14px;border:2px solid var(--ink);
+    background:transparent;color:var(--ink);padding:9px 18px;border-radius:999px;cursor:pointer;transition:all .15s ease;
+  }
+  nav.tabs button.active{background:var(--ink);color:var(--cream);}
+  nav.tabs button:hover:not(.active){background:rgba(43,38,32,0.06);}
+
+  .view{display:none;}
+  .view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .banner{
+    border:1.5px dashed var(--guava);background:#FBEAEC;color:#8a2f3d;border-radius:10px;
+    padding:14px 16px;margin-bottom:22px;font-size:13.5px;line-height:1.5;
+  }
+  .banner b{display:block;margin-bottom:4px;font-size:14px;}
+  .banner a, .banner button.link{color:#8a2f3d;text-decoration:underline;font-weight:700;background:none;border:none;padding:0;cursor:pointer;font-size:13.5px;font-family:inherit;}
+
+  .hero-row{display:grid;grid-template-columns:220px 1fr;gap:22px;margin-bottom:24px;}
+  @media(max-width:760px){.hero-row{grid-template-columns:1fr;}}
+  .stamp{
+    background:var(--cibao-green);color:var(--cream);border-radius:50%;aspect-ratio:1/1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    border:3px dashed var(--banana);outline:2px solid var(--cibao-green);outline-offset:6px;
+    transform:rotate(-4deg);padding:14px;position:relative;
+  }
+  .stamp .label{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;opacity:0.85;font-weight:600;}
+  .stamp .amount{font-family:'Space Mono',monospace;font-weight:700;font-size:26px;margin:6px 0 4px;line-height:1.05;}
+  .stamp .delta{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,0.15);}
+  .stamp .delta.neg{color:#FFD9DD;}
+  .stamp .delta.pos{color:#D8F5DE;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:760px){.kpi-grid{grid-template-columns:1fr 1fr;}}
+  .kpi-card{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  .kpi-card:before{content:"";position:absolute;top:0;left:0;bottom:0;width:5px;}
+  .kpi-card.ventas:before{background:var(--cibao-green);}
+  .kpi-card.compras:before{background:var(--papaya);}
+  .kpi-card.margen:before{background:var(--banana);}
+  .kpi-card .k-label{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;color:#7a6c54;font-weight:700;margin-bottom:8px;}
+  .kpi-card .k-value{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--ink);}
+  .kpi-card .k-sub{font-size:12px;color:#8a7c63;margin-top:6px;}
+
+  .chart-row{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:28px;}
+  @media(max-width:820px){.chart-row{grid-template-columns:1fr;}}
+  .panel{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:20px;box-shadow:var(--shadow);}
+  .panel h3{margin:0 0 14px;font-family:'Alfa Slab One',cursive;font-weight:400;font-size:15px;color:var(--cibao-green);letter-spacing:0.4px;}
+  .chart-holder{height:230px;position:relative;}
+
+  .reg-tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .reg-tabs button{
+    font-family:'Work Sans';font-weight:700;font-size:13px;border:1.5px solid var(--ink);background:var(--cream);
+    color:var(--ink);padding:7px 14px;border-radius:8px 8px 0 0;cursor:pointer;border-bottom:none;opacity:0.55;
+  }
+  .reg-tabs button.active{opacity:1;background:var(--paper);}
+  .form-panel{background:var(--paper);border:1.5px solid var(--line);border-radius:0 10px 10px 10px;padding:20px;box-shadow:var(--shadow);margin-bottom:28px;}
+  .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media(max-width:700px){.form-grid{grid-template-columns:1fr 1fr;}}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#7a6c54;}
+  .field input, .field select{font-family:'Work Sans';font-size:14px;padding:9px 10px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);}
+  .field input:focus,.field select:focus{outline:2px solid var(--cibao-green);border-color:var(--cibao-green);}
+  .form-actions{margin-top:16px;display:flex;justify-content:flex-end;align-items:center;gap:12px;}
+  .btn-add{font-family:'Work Sans';font-weight:800;font-size:14px;background:var(--papaya);color:#fff;border:none;border-radius:8px;padding:11px 22px;cursor:pointer;box-shadow:0 3px 0 #b8551a;}
+  .btn-add:active{transform:translateY(2px);box-shadow:0 1px 0 #b8551a;}
+  .btn-add:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .ledger h3{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:15px;color:var(--cibao-green);margin-bottom:14px;}
+  .ticket{display:grid;grid-template-columns:88px 1fr auto auto;align-items:center;gap:14px;background:#fff;border:1.5px dashed var(--line);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+  @media(max-width:700px){.ticket{grid-template-columns:70px 1fr auto;}.ticket .t-cat{display:none;}}
+  .ticket .t-date{font-family:'Space Mono',monospace;font-size:12px;color:#8a7c63;}
+  .ticket .t-main{font-weight:600;font-size:14px;}
+  .ticket .t-main span{display:block;font-size:12px;font-weight:400;color:#8a7c63;margin-top:2px;}
+  .ticket .t-cat{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:4px 9px;border-radius:999px;white-space:nowrap;}
+  .ticket.venta .t-cat{background:#E4F1E6;color:var(--cibao-green);}
+  .ticket.compra .t-cat{background:#FBE4D2;color:var(--papaya);}
+  .ticket.gasto .t-cat{background:#F6D9DD;color:var(--guava);}
+  .ticket .t-amt{font-family:'Space Mono',monospace;font-weight:700;font-size:14px;}
+  .ticket.venta .t-amt{color:var(--cibao-green);}
+  .ticket.compra .t-amt,.ticket.gasto .t-amt{color:var(--guava);}
+  .t-del{background:none;border:none;color:#b3a789;cursor:pointer;font-size:16px;padding:2px 6px;}
+  .t-del:hover{color:var(--guava);}
+  .empty-note{color:#8a7c63;font-size:13px;padding:14px 4px;}
+  .loading{text-align:center;padding:60px 20px;color:#8a7c63;font-family:'Space Mono',monospace;}
+
+  /* ---- Configuración ---- */
+  .config-box{max-width:560px;}
+  .config-box p{font-size:14px;line-height:1.6;color:#4a4030;}
+  .config-box input{width:100%;font-family:'Space Mono',monospace;font-size:13px;padding:11px 12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;margin:10px 0 14px;}
+  .config-status{font-size:13px;font-weight:600;margin-top:10px;}
+  .config-status.ok{color:var(--cibao-green);}
+  .config-status.err{color:var(--guava);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">EL<br>CONUCO</div>
+      <div>
+        <h1>El Conuco</h1>
+        <p>Fresco directo a tu puerta — panel de finanzas</p>
+      </div>
+    </div>
+    <div class="head-right">
+      <span class="sync-dot" id="syncDot" title="Estado de conexión"></span>
+      <div class="month-badge" id="monthBadge">—</div>
+      <button class="gear" id="gearBtn" title="Configuración">⚙</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="resumen" class="active">Resumen</button>
+    <button data-view="registro">Registrar</button>
+    <button data-view="config">Configuración</button>
+  </nav>
+
+  <div id="setupBanner" class="banner" style="display:none;">
+    <b>Aún no está conectado a tu Google Sheet</b>
+    Ve a la pestaña <button class="link" data-goto="config">Configuración</button> y pega la URL de tu Apps Script para empezar a guardar datos reales.
+  </div>
+
+  <div id="loading" class="loading">Cargando tu mercado…</div>
+
+  <!-- ===================== RESUMEN ===================== -->
+  <section class="view" id="view-resumen">
+    <div class="hero-row">
+      <div class="stamp">
+        <div class="label">Ganancia neta</div>
+        <div class="amount" id="stampGanancia">RD$0</div>
+        <div class="delta" id="stampDelta">— vs mes pasado</div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card ventas">
+          <div class="k-label">Ventas del mes</div>
+          <div class="k-value" id="kpiVentas">RD$0</div>
+          <div class="k-sub" id="kpiVentasSub">0 pedidos</div>
+        </div>
+        <div class="kpi-card compras">
+          <div class="k-label">Compras del mes</div>
+          <div class="k-value" id="kpiCompras">RD$0</div>
+          <div class="k-sub" id="kpiComprasSub">0 compras</div>
+        </div>
+        <div class="kpi-card margen">
+          <div class="k-label">Margen neto</div>
+          <div class="k-value" id="kpiMargen">0%</div>
+          <div class="k-sub">sobre ventas del mes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="panel">
+        <h3>Tendencia — últimos 6 meses</h3>
+        <div class="chart-holder"><canvas id="trendChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>Ventas por producto (este mes)</h3>
+        <div class="chart-holder"><canvas id="productChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel ledger">
+      <h3>Actividad reciente</h3>
+      <div id="ledgerList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== REGISTRO ===================== -->
+  <section class="view" id="view-registro">
+    <div class="reg-tabs">
+      <button data-reg="venta" class="active">+ Venta</button>
+      <button data-reg="compra">+ Compra</button>
+      <button data-reg="gasto">+ Gasto</button>
+    </div>
+
+    <form class="form-panel" id="form-venta">
+      <div class="form-grid">
+        <div class="field"><label>Fecha</label><input type="date" name="Fecha" required></div>
+        <div class="field"><label>Cliente</label><input type="text" name="Cliente" placeholder="Nombre del cliente" required></div>
+        <div class="field"><label>Producto / Box</label><input type="text" name="Producto" placeholder="Box El Semanal de la Casa" required></div>
+        <div class="field"><label>Cantidad</label><input type="number" name="Cantidad" min="1" value="1" required></div>
+        <div class="field"><label>Precio unitario (RD$)</label><input type="number" name="Precio" min="0" step="0.01" required></div>
+        <div class="field"><label>Método de pago</label>
+          <select name="Metodo">
+            <option>Efectivo</option>
+            <option>Transferencia Banreservas</option>
+            <option>Transferencia Popular</option>
+            <option>Transferencia BHD</option>
+            <option>Caribe Express</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions"><span class="config-status" id="statusVenta"></span><button type="submit" class="btn-add">Registrar venta</button></div>
+    </form>
+
+    <form class="form-panel" id="form-compra" style="display:none;">
+      <div class="form-grid">
+        <div class="field"><label>Fecha</label><input type="date" name="Fecha" required></div>
+        <div class="field"><label>Suplidor</label><input type="text" name="Suplidor" placeholder="Nombre del suplidor" required></div>
+        <div class="field"><label>Producto</label><input type="text" name="Producto" placeholder="Guineo maduro (25 uds)" required></div>
+        <div class="field"><label>Cantidad</label><input type="number" name="Cantidad" min="1" value="1" required></div>
+        <div class="field"><label>Costo unitario (RD$)</label><input type="number" name="Precio" min="0" step="0.01" required></div>
+      </div>
+      <div class="form-actions"><span class="config-status" id="statusCompra"></span><button type="submit" class="btn-add">Registrar compra</button></div>
+    </form>
+
+    <form class="form-panel" id="form-gasto" style="display:none;">
+      <div class="form-grid">
+        <div class="field"><label>Fecha</label><input type="date" name="Fecha" required></div>
+        <div class="field"><label>Categoría</label>
+          <select name="Categoria">
+            <option>Delivery</option>
+            <option>Empaque</option>
+            <option>Publicidad</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field"><label>Descripción</label><input type="text" name="Descripcion" placeholder="Motoconcho para entregas" required></div>
+        <div class="field"><label>Monto (RD$)</label><input type="number" name="Monto" min="0" step="0.01" required></div>
+      </div>
+      <div class="form-actions"><span class="config-status" id="statusGasto"></span><button type="submit" class="btn-add">Registrar gasto</button></div>
+    </form>
+
+    <div class="panel ledger">
+      <h3>Todo lo registrado</h3>
+      <div id="fullLedgerList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONFIGURACIÓN ===================== -->
+  <section class="view" id="view-config">
+    <div class="panel config-box">
+      <h3>Conectar tu Google Sheet</h3>
+      <p>Este dashboard guarda todo en un Google Sheet tuyo, gratis, usando Apps Script como puente. Crea la hoja con 3 pestañas (Ventas, Compras, Gastos), pega el código de Apps Script que te di, publícalo como app web, y pega aquí la URL que termina en <code>/exec</code>.</p>
+      <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+      <div class="form-actions" style="justify-content:flex-start;">
+        <button class="btn-add" id="saveConfigBtn">Guardar conexión</button>
+        <span class="config-status" id="configStatus"></span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const CONFIG_KEY = 'el-conuco-config-v1';
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+let SCRIPT_URL = '';
+let DATA = { ventas: [], compras: [], gastos: [] };
+let trendChartInstance = null, productChartInstance = null;
+
+function fmt(n){
+  return 'RD$' + Number(n||0).toLocaleString('es-DO', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function setSyncState(state){
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot' + (state==='ok' ? ' ok' : state==='err' ? ' err' : '');
+}
+
+/* ---------- Configuración (solo guarda la URL, no los datos financieros) ---------- */
+async function loadConfig(){
+  try{
+    const res = await window.storage.get(CONFIG_KEY, false);
+    if(res && res.value){
+      const cfg = JSON.parse(res.value);
+      SCRIPT_URL = cfg.url || '';
+    }
+  }catch(e){ /* sin configuración todavía */ }
+  document.getElementById('scriptUrlInput').value = SCRIPT_URL;
+}
+async function saveConfig(url){
+  SCRIPT_URL = url.trim();
+  try{ await window.storage.set(CONFIG_KEY, JSON.stringify({url:SCRIPT_URL}), false); }catch(e){}
+}
+
+/* ---------- Llamadas a la API (Apps Script sobre tu Google Sheet) ---------- */
+async function apiList(sheet){
+  const res = await fetch(SCRIPT_URL + '?action=list&sheet=' + encodeURIComponent(sheet));
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+async function apiAdd(sheet, data){
+  const res = await fetch(SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ action:'add', sheet, data })
+  });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+async function apiDelete(sheet, row){
+  const res = await fetch(SCRIPT_URL + '?action=delete&sheet=' + encodeURIComponent(sheet) + '&row=' + row);
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+async function loadAllData(){
+  const [ventas, compras, gastos] = await Promise.all([
+    apiList('Ventas'), apiList('Compras'), apiList('Gastos')
+  ]);
+  DATA.ventas = (ventas||[]).map(v=>({ _row:v._row, fecha:toISODate(v.Fecha), quien:v.Cliente, producto:v.Producto, cantidad:Number(v.Cantidad)||0, precio:Number(v.Precio)||0, metodo:v.Metodo }));
+  DATA.compras = (compras||[]).map(c=>({ _row:c._row, fecha:toISODate(c.Fecha), quien:c.Suplidor, producto:c.Producto, cantidad:Number(c.Cantidad)||0, precio:Number(c.Precio)||0 }));
+  DATA.gastos = (gastos||[]).map(g=>({ _row:g._row, fecha:toISODate(g.Fecha), quien:g.Categoria, producto:g.Descripcion, precio:Number(g.Monto)||0 }));
+}
+
+function toISODate(val){
+  if(!val) return '';
+  if(typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) return val.slice(0,10);
+  const d = new Date(val);
+  if(isNaN(d)) return '';
+  return d.toISOString().slice(0,10);
+}
+
+/* ---------- Cálculos y render ---------- */
+function inMonth(fechaStr, monthIdx, year){
+  if(!fechaStr) return false;
+  const dt = new Date(fechaStr+'T00:00:00');
+  return dt.getMonth()===monthIdx && dt.getFullYear()===year;
+}
+function totals(list, monthIdx, year){
+  return list.filter(x=>inMonth(x.fecha, monthIdx, year))
+              .reduce((s,x)=> s + (x.cantidad? x.cantidad*x.precio : x.precio), 0);
+}
+
+function render(){
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const prevM = m===0?11:m-1, prevY = m===0?y-1:y;
+
+  document.getElementById('monthBadge').textContent = MESES[m] + ' ' + y;
+
+  const ventasMes = totals(DATA.ventas, m, y);
+  const comprasMes = totals(DATA.compras, m, y);
+  const gastosMes = totals(DATA.gastos, m, y);
+  const ventasPrev = totals(DATA.ventas, prevM, prevY);
+  const comprasPrev = totals(DATA.compras, prevM, prevY);
+  const gastosPrev = totals(DATA.gastos, prevM, prevY);
+
+  const gananciaNeta = ventasMes - comprasMes - gastosMes;
+  const gananciaPrev = ventasPrev - comprasPrev - gastosPrev;
+  const margen = ventasMes>0 ? (gananciaNeta/ventasMes*100) : 0;
+
+  document.getElementById('stampGanancia').textContent = fmt(gananciaNeta);
+  const delta = gananciaPrev!==0 ? ((gananciaNeta-gananciaPrev)/Math.abs(gananciaPrev)*100) : (gananciaNeta>0?100:0);
+  const deltaEl = document.getElementById('stampDelta');
+  deltaEl.textContent = (delta>=0?'▲ ':'▼ ') + Math.abs(delta).toFixed(0) + '% vs mes pasado';
+  deltaEl.className = 'delta ' + (delta>=0?'pos':'neg');
+
+  document.getElementById('kpiVentas').textContent = fmt(ventasMes);
+  document.getElementById('kpiVentasSub').textContent = DATA.ventas.filter(x=>inMonth(x.fecha,m,y)).length + ' pedidos';
+  document.getElementById('kpiCompras').textContent = fmt(comprasMes);
+  document.getElementById('kpiComprasSub').textContent = DATA.compras.filter(x=>inMonth(x.fecha,m,y)).length + ' compras';
+  document.getElementById('kpiMargen').textContent = margen.toFixed(0) + '%';
+
+  renderTrendChart(y,m);
+  renderProductChart(y,m);
+  renderLedger();
+  renderFullLedger();
+}
+
+function renderTrendChart(y,m){
+  const labels=[], ventasArr=[], gastosArr=[];
+  for(let i=5;i>=0;i--){
+    let mi = m-i, yi = y;
+    if(mi<0){ mi+=12; yi-=1; }
+    labels.push(MESES[mi].slice(0,3));
+    ventasArr.push(totals(DATA.ventas, mi, yi));
+    const c = totals(DATA.compras, mi, yi);
+    const g = totals(DATA.gastos, mi, yi);
+    gastosArr.push(c+g);
+  }
+  const ctx = document.getElementById('trendChart');
+  if(trendChartInstance) trendChartInstance.destroy();
+  trendChartInstance = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      {label:'Ventas', data:ventasArr, backgroundColor:'#1F4D2C', borderRadius:4, maxBarThickness:26},
+      {label:'Compras + Gastos', data:gastosArr, backgroundColor:'#E8722C', borderRadius:4, maxBarThickness:26}
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom', labels:{font:{family:'Work Sans', size:11}, boxWidth:10, usePointStyle:true, pointStyle:'circle'}}},
+      scales:{
+        y:{grid:{color:'#EAE0C8'}, ticks:{font:{family:'Space Mono', size:10}, callback:v=>'RD$'+v}},
+        x:{grid:{display:false}, ticks:{font:{family:'Work Sans', size:11}}}
+      }
+    }
+  });
+}
+
+function renderProductChart(y,m){
+  const ventasMes = DATA.ventas.filter(x=>inMonth(x.fecha,m,y));
+  const byProd = {};
+  ventasMes.forEach(v=>{ byProd[v.producto] = (byProd[v.producto]||0) + v.cantidad*v.precio; });
+  const labels = Object.keys(byProd);
+  const values = Object.values(byProd);
+  const palette = ['#1F4D2C','#E8722C','#F4B942','#C1495A','#6b8f6f','#a8763a'];
+  const ctx = document.getElementById('productChart');
+  if(productChartInstance) productChartInstance.destroy();
+  if(labels.length===0){
+    ctx.getContext('2d').clearRect(0,0,ctx.width,ctx.height);
+    return;
+  }
+  productChartInstance = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels, datasets:[{data:values, backgroundColor:labels.map((_,i)=>palette[i%palette.length]), borderWidth:2, borderColor:'#F5ECDC'}] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{legend:{position:'bottom', labels:{font:{family:'Work Sans', size:10.5}, boxWidth:9, usePointStyle:true, pointStyle:'circle'}}}
+    }
+  });
+}
+
+function allTransactions(){
+  const v = DATA.ventas.map(x=>({...x, tipo:'venta', sheet:'Ventas', monto:x.cantidad*x.precio}));
+  const c = DATA.compras.map(x=>({...x, tipo:'compra', sheet:'Compras', monto:-(x.cantidad*x.precio)}));
+  const g = DATA.gastos.map(x=>({...x, tipo:'gasto', sheet:'Gastos', monto:-(x.precio)}));
+  return [...v,...c,...g].sort((a,b)=> new Date(b.fecha) - new Date(a.fecha));
+}
+
+function ticketHTML(t){
+  const catLabel = t.tipo==='venta'?'Venta':t.tipo==='compra'?'Compra':'Gasto';
+  const dt = t.fecha ? new Date(t.fecha+'T00:00:00') : null;
+  const dateStr = dt ? dt.toLocaleDateString('es-DO', {day:'2-digit', month:'short'}) : '—';
+  const sub = t.tipo==='gasto' ? t.quien : (t.cantidad+' x '+fmt(t.precio));
+  return `<div class="ticket ${t.tipo}">
+    <div class="t-date">${dateStr}</div>
+    <div class="t-main">${t.producto||''}<span>${t.quien||''}${t.tipo!=='gasto' ? ' · '+sub : ''}</span></div>
+    <div class="t-cat">${catLabel}</div>
+    <div class="t-amt">${t.monto<0?'-':''}${fmt(Math.abs(t.monto))}</div>
+    <button class="t-del" data-row="${t._row}" data-sheet="${t.sheet}" title="Eliminar">✕</button>
+  </div>`;
+}
+
+function renderLedger(){
+  const items = allTransactions().slice(0,8);
+  const el = document.getElementById('ledgerList');
+  el.innerHTML = items.length ? items.map(ticketHTML).join('') : '<div class="empty-note">Aún no hay movimientos este mes.</div>';
+  attachDeleteHandlers(el);
+}
+function renderFullLedger(){
+  const items = allTransactions();
+  const el = document.getElementById('fullLedgerList');
+  el.innerHTML = items.length ? items.map(ticketHTML).join('') : '<div class="empty-note">Aún no has registrado nada.</div>';
+  attachDeleteHandlers(el);
+}
+function attachDeleteHandlers(container){
+  container.querySelectorAll('.t-del').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      btn.disabled = true;
+      try{
+        await apiDelete(btn.dataset.sheet, btn.dataset.row);
+        await loadAllData();
+        render();
+      }catch(e){ alert('No se pudo eliminar. Revisa tu conexión en Configuración.'); }
+    });
+  });
+}
+
+/* ---- navegación de vistas principales ---- */
+function goto(view){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+}
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=> goto(btn.dataset.view));
+});
+document.getElementById('gearBtn').addEventListener('click', ()=> goto('config'));
+document.querySelectorAll('[data-goto]').forEach(el=>{
+  el.addEventListener('click', ()=> goto(el.dataset.goto));
+});
+
+/* ---- sub-tabs de registro ---- */
+document.querySelectorAll('.reg-tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.reg-tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ['venta','compra','gasto'].forEach(t=>{
+      document.getElementById('form-'+t).style.display = (t===btn.dataset.reg)?'block':'none';
+    });
+  });
+});
+
+/* ---- formularios de registro ---- */
+function setupForm(id, sheetName, statusId){
+  document.getElementById(id).addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    if(!SCRIPT_URL){ goto('config'); return; }
+    const statusEl = document.getElementById(statusId);
+    const submitBtn = e.target.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Guardando…';
+    statusEl.className = 'config-status';
+    const fd = new FormData(e.target);
+    const data = {};
+    fd.forEach((val,key)=>{ data[key] = val; });
+    try{
+      await apiAdd(sheetName, data);
+      await loadAllData();
+      render();
+      e.target.reset();
+      const today = new Date().toISOString().slice(0,10);
+      e.target.querySelectorAll('input[type=date]').forEach(i=>i.value=today);
+      statusEl.textContent = '¡Guardado!';
+      statusEl.className = 'config-status ok';
+      setTimeout(()=>{ statusEl.textContent=''; }, 2500);
+    }catch(err){
+      statusEl.textContent = 'No se pudo guardar. Revisa la conexión.';
+      statusEl.className = 'config-status err';
+    }
+    submitBtn.disabled = false;
+  });
+}
+setupForm('form-venta','Ventas','statusVenta');
+setupForm('form-compra','Compras','statusCompra');
+setupForm('form-gasto','Gastos','statusGasto');
+
+/* ---- configuración ---- */
+document.getElementById('saveConfigBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  const statusEl = document.getElementById('configStatus');
+  if(!url){ statusEl.textContent='Pega la URL primero.'; statusEl.className='config-status err'; return; }
+  statusEl.textContent = 'Probando conexión…';
+  statusEl.className = 'config-status';
+  await saveConfig(url);
+  try{
+    await loadAllData();
+    setSyncState('ok');
+    document.getElementById('setupBanner').style.display = 'none';
+    statusEl.textContent = '¡Conectado correctamente!';
+    statusEl.className = 'config-status ok';
+    render();
+  }catch(err){
+    setSyncState('err');
+    statusEl.textContent = 'No se pudo conectar. Revisa que la URL termine en /exec y que el acceso sea "Cualquier usuario".';
+    statusEl.className = 'config-status err';
+  }
+});
+
+/* ---- init ---- */
+(async function init(){
+  await loadConfig();
+  const today = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('input[type=date]').forEach(i=>i.value=today);
+
+  if(!SCRIPT_URL){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('setupBanner').style.display = 'block';
+    goto('resumen');
+    setSyncState('');
+    render();
+    return;
+  }
+
+  try{
+    await loadAllData();
+    setSyncState('ok');
+  }catch(e){
+    setSyncState('err');
+    document.getElementById('setupBanner').style.display = 'block';
+  }
+  document.getElementById('loading').style.display = 'none';
+  goto('resumen');
+  render();
+})();
+</script>
+</body>
+</html>
