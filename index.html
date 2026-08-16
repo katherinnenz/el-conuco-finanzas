@@ -7,82 +7,96 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root{
-    --cibao-green:#1F4D2C;
-    --cibao-green-light:#2E6B3F;
-    --cibao-green-dark:#123019;
-    --cibao-green-soft:#EAF3EC;
-    --papaya:#E8722C;
-    --papaya-soft:#FDEEE3;
-    --banana:#F4B942;
-    --banana-soft:#FEF6E2;
-    --cream:#FAF6EE;
+    --cibao-green:#151611;
+    --cibao-green-light:#22241C;
+    --cibao-green-dark:#0E0F0B;
+    --cibao-green-soft:#F2FBD6;
+    --lime:#D6FF3F;
+    --lime-dark:#B8E01A;
+    --papaya:#E07234;
+    --papaya-soft:#FBEEE4;
+    --banana:#E8A93C;
+    --banana-soft:#FBF3E1;
+    --cream:#F1F1F4;
     --paper:#FFFFFF;
-    --ink:#26231E;
-    --ink-soft:#726A5C;
-    --guava:#C1495A;
-    --guava-soft:#FBEAEC;
-    --line:#EAE3D3;
-    --radius:16px;
-    --radius-sm:10px;
-    --shadow-sm: 0 1px 2px rgba(38,35,30,0.06);
-    --shadow-md: 0 8px 24px -8px rgba(31,77,44,0.16);
-    --shadow-lift: 0 14px 32px -10px rgba(31,77,44,0.24);
-    --sidebar-w:238px;
-    --rightcol-w:296px;
+    --ink:#14150F;
+    --ink-soft:#8C8C93;
+    --ink-faint:#B9B9C0;
+    --guava:#EA5B6F;
+    --guava-soft:#FDEBEE;
+    --line:#ECECF0;
+    --line-soft:#F4F4F7;
+    --radius:22px;
+    --radius-sm:16px;
+    --radius-lg:28px;
+    --shadow-sm: 0 1px 2px rgba(20,21,15,0.04);
+    --shadow-md: 0 10px 26px -14px rgba(20,21,15,0.16);
+    --shadow-lift: 0 22px 46px -18px rgba(20,21,15,0.22);
+    --sidebar-w:88px;
+    --rightcol-w:300px;
   }
   *{box-sizing:border-box;}
-  ::selection{background:var(--banana); color:var(--ink);}
+  ::selection{background:var(--lime); color:var(--ink);}
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background:var(--cream);
+    background:#E7E7EC;
     color:var(--ink);
     font-family:'Plus Jakarta Sans', sans-serif;
     -webkit-font-smoothing:antialiased;
+    padding:18px;
   }
   ::-webkit-scrollbar{width:9px;height:9px;}
   ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:#D8CDB0;border-radius:99px;border:2px solid var(--cream);}
+  ::-webkit-scrollbar-thumb{background:#D2D2DA;border-radius:99px;border:2px solid var(--cream);}
   svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
   button{font-family:inherit;}
 
   /* ---------- APP SHELL ---------- */
-  .app-shell{display:flex;align-items:flex-start;min-height:100vh;}
+  .app-shell{
+    display:flex;align-items:flex-start;min-height:calc(100vh - 36px);max-width:1600px;margin:0 auto;
+    background:var(--paper);border-radius:32px;box-shadow:var(--shadow-lift);overflow:hidden;
+  }
+  @media(max-width:860px){ body{padding:0;} .app-shell{border-radius:0;box-shadow:none;min-height:100vh;} }
 
-  /* ---------- SIDEBAR ---------- */
+  /* ---------- SIDEBAR (icon rail) ---------- */
   .sidebar{
-    width:var(--sidebar-w);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
-    background:linear-gradient(190deg, var(--cibao-green-light) 0%, var(--cibao-green-dark) 78%);
-    color:#EFE9D8;padding:22px 16px 18px;display:flex;flex-direction:column;
-    border-radius:0 26px 26px 0;box-shadow:12px 0 34px -18px rgba(18,48,25,0.55);
+    width:var(--sidebar-w);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;
+    background:var(--paper);
+    color:var(--ink);padding:22px 12px 16px;display:flex;flex-direction:column;align-items:center;
+    border-radius:0;border-right:1px solid var(--line);
   }
-  .side-brand{display:flex;align-items:center;gap:11px;padding:0 6px 20px;}
-  .side-brand .mark{width:42px;height:42px;border-radius:13px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,0.25);}
+  .sidebar::-webkit-scrollbar{display:none;}
+  .side-brand{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 0 22px;}
+  .side-brand .mark{width:38px;height:38px;border-radius:11px;overflow:hidden;flex-shrink:0;}
   .side-brand .mark img{width:100%;height:100%;object-fit:cover;}
-  .side-brand h1{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:17px;margin:0;color:#fff;letter-spacing:0.2px;}
-  .side-brand p{margin:1px 0 0;font-size:10.5px;color:#B9CDBC;letter-spacing:0.2px;}
+  .side-brand h1, .side-brand p{display:none;}
 
-  .side-group-label{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#8FAB96;font-weight:700;margin:16px 10px 8px;}
-  .side-nav{display:flex;flex-direction:column;gap:2px;}
+  .side-group-label{display:none;}
+  .side-nav{display:flex;flex-direction:column;gap:6px;align-items:center;width:100%;}
   .side-nav button{
-    display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:none;background:transparent;
-    color:#D9E8DC;font-weight:600;font-size:13.5px;padding:10px 12px;border-radius:12px;cursor:pointer;
-    transition:all .15s ease;
+    display:flex;align-items:center;justify-content:center;gap:0;width:46px;height:46px;text-align:left;border:none;background:transparent;
+    color:var(--ink-faint);font-weight:600;font-size:13.5px;padding:0;border-radius:14px;cursor:pointer;position:relative;
+    transition:background .15s ease, color .15s ease;
   }
-  .side-nav button svg{width:17px;height:17px;opacity:0.85;flex-shrink:0;}
-  .side-nav button:hover{background:rgba(255,255,255,0.08);color:#fff;}
-  .side-nav button.active{background:var(--banana);color:var(--cibao-green-dark);box-shadow:0 6px 16px -6px rgba(244,185,66,0.55);}
-  .side-nav button.active svg{opacity:1;}
-  .side-nav .badge-dot{margin-left:auto;background:var(--guava);color:#fff;font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:99px;font-family:'Space Mono',monospace;}
-  .side-nav button.active .badge-dot{background:var(--cibao-green-dark);color:#fff;}
+  .side-nav button span{display:none;}
+  .side-nav button svg{width:19px;height:19px;opacity:0.9;flex-shrink:0;}
+  .side-nav button:hover{background:var(--line-soft);color:var(--ink);}
+  .side-nav button.active{background:var(--lime);color:var(--ink);box-shadow:none;}
+  .side-nav button.active svg{opacity:1;color:var(--ink);}
+  .side-nav .badge-dot{position:absolute;top:4px;right:4px;background:var(--guava);color:#fff;font-size:8.5px;font-weight:800;padding:1px 4.5px;border-radius:99px;font-family:'Space Mono',monospace;margin-left:0;}
+  .side-nav button.active .badge-dot{background:var(--ink);color:var(--lime);}
 
-  .side-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12);}
-  .side-foot .sync-row{display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:11.5px;color:#B9CDBC;}
-  .side-foot .sync-row .sync-dot{width:8px;height:8px;border-radius:50%;background:#5b7362;flex-shrink:0;}
-  .side-foot .sync-row .sync-dot.ok{background:#7CD98B;box-shadow:0 0 0 3px rgba(124,217,139,0.18);}
-  .side-foot .sync-row .sync-dot.err{background:var(--guava);box-shadow:0 0 0 3px rgba(193,73,90,0.22);}
+  .side-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);width:100%;display:flex;flex-direction:column;align-items:center;}
+  .side-foot .sync-row{display:flex;align-items:center;justify-content:center;padding:8px 0;}
+  .side-foot .sync-row span#syncLabel{display:none;}
+  .side-foot .sync-row .sync-dot{width:8px;height:8px;border-radius:50%;background:#D6D6DC;flex-shrink:0;}
+  .side-foot .sync-row .sync-dot.ok{background:#8FE05A;box-shadow:0 0 0 3px rgba(143,224,90,0.18);}
+  .side-foot .sync-row .sync-dot.err{background:var(--guava);box-shadow:0 0 0 3px rgba(234,91,111,0.18);}
 
   @media(max-width:960px){ .sidebar{display:none;} }
 
@@ -95,25 +109,26 @@
 
   /* ---------- TOP BAR ---------- */
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
-  .topbar .greet h2{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:22px;margin:0 0 3px;color:var(--ink);}
+  .topbar .greet h2{font-family:'Plus Jakarta Sans';font-weight:800;font-size:24px;margin:0 0 3px;color:var(--ink);letter-spacing:-0.5px;}
   .topbar .greet p{margin:0;font-size:13px;color:var(--ink-soft);max-width:520px;line-height:1.5;}
   .search-pill{
-    display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:99px;
-    padding:9px 16px;min-width:220px;box-shadow:var(--shadow-sm);color:var(--ink-soft);
+    display:flex;align-items:center;gap:8px;background:var(--paper);border:1.5px solid var(--line);border-radius:99px;
+    padding:9px 16px;min-width:220px;box-shadow:var(--shadow-sm);color:var(--ink-soft);transition:border-color .15s ease, box-shadow .15s ease;
   }
+  .search-pill:focus-within{border-color:var(--ink);box-shadow:0 0 0 3.5px rgba(20,21,15,0.08);}
   .search-pill svg{width:16px;height:16px;}
   .search-pill input{border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);width:100%;}
   .top-right{display:flex;align-items:center;gap:10px;}
   .month-badge{
-    font-family:'Space Mono',monospace;background:var(--ink);color:var(--cream);
+    font-family:'Space Mono',monospace;background:var(--ink);color:var(--lime);
     padding:8px 15px;border-radius:99px;font-size:12.5px;text-transform:capitalize;letter-spacing:0.3px;white-space:nowrap;
   }
   .icon-btn{
-    width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--paper);
+    width:38px;height:38px;border-radius:99px;border:1px solid var(--line);background:var(--paper);
     cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
-    transition:all .15s ease;box-shadow:var(--shadow-sm);position:relative;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;box-shadow:var(--shadow-sm);position:relative;
   }
-  .icon-btn:hover{color:var(--cibao-green);border-color:var(--cibao-green);transform:translateY(-1px);}
+  .icon-btn:hover{color:var(--ink);border-color:var(--ink);background:var(--lime);}
   .icon-btn .dot-count{position:absolute;top:-4px;right:-4px;background:var(--guava);color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 5px;font-family:'Space Mono',monospace;}
   @media(max-width:960px){ .main-col{padding:16px 14px 92px;} }
 
@@ -123,44 +138,49 @@
 
   .banner{
     display:flex;align-items:center;gap:12px;
-    border:1px solid #F0C9CE;background:var(--guava-soft);color:#8a2f3d;border-radius:var(--radius-sm);
+    border:1px solid #F6C3CB;background:var(--guava-soft);color:#8a2f3d;border-radius:var(--radius-sm);
     padding:14px 16px;margin-bottom:22px;font-size:13.5px;line-height:1.5;
   }
   .banner b{display:block;margin-bottom:2px;font-size:14px;}
   .banner a, .banner button.link{color:inherit;text-decoration:underline;font-weight:700;background:none;border:none;padding:0;cursor:pointer;font-size:13.5px;font-family:inherit;}
 
-  /* ---------- WIDGET CARDS (KPI, colorful) ---------- */
+  /* ---------- WIDGET CARDS (KPI) ---------- */
   .widget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
   @media(max-width:1080px){.widget-grid{grid-template-columns:1fr 1fr;}}
   @media(max-width:560px){.widget-grid{grid-template-columns:1fr;}}
   .widget{
-    border-radius:20px;padding:17px 18px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;
-    box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+    border-radius:var(--radius);padding:18px 19px;min-height:148px;display:flex;flex-direction:column;justify-content:space-between;
+    box-shadow:var(--shadow-sm);position:relative;overflow:hidden;background:var(--paper);border:1px solid var(--line);
   }
-  .widget .w-label{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:14px;letter-spacing:0.2px;}
-  .widget .w-value{font-family:'Space Mono',monospace;font-weight:700;font-size:21px;margin-top:2px;}
-  .widget .w-sub{font-size:11px;opacity:0.75;margin-top:4px;font-weight:600;}
-  .widget.w-banana{background:var(--banana-soft);color:#7A5306;}
-  .widget.w-guava{background:linear-gradient(155deg,#F6D3D8,var(--guava-soft));color:#7C2735;}
-  .widget.w-green{background:linear-gradient(155deg,var(--cibao-green-light),var(--cibao-green) 75%);color:#EAF6EE;}
-  .widget.w-papaya{background:var(--papaya-soft);color:#8A4110;}
-  .widget .w-icon{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.45);}
-  .widget.w-green .w-icon{background:rgba(255,255,255,0.16);}
+  .widget .w-label{display:flex;align-items:center;gap:7px;font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;letter-spacing:0.1px;opacity:0.9;}
+  .widget .w-label:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--lime);flex-shrink:0;}
+  .widget .w-value{font-family:'Space Mono',monospace;font-weight:700;font-size:24px;margin-top:5px;letter-spacing:-0.5px;}
+  .widget .w-sub{font-size:11px;opacity:0.55;margin-top:4px;font-weight:600;}
+  .widget.w-banana{color:var(--ink);}
+  .widget.w-banana .w-label:before{background:var(--banana);}
+  .widget.w-guava{color:var(--ink);}
+  .widget.w-guava .w-label:before{background:var(--guava);}
+  .widget.w-green{background:var(--ink);color:#F5F6EE;border-color:var(--ink);}
+  .widget.w-green .w-label:before{background:var(--lime);}
+  .widget.w-papaya{color:var(--ink);}
+  .widget.w-papaya .w-label:before{background:var(--papaya);}
+  .widget .w-icon{position:absolute;top:16px;right:17px;width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--cream);}
+  .widget.w-green .w-icon{background:rgba(255,255,255,0.1);}
   .widget .w-icon svg{width:15px;height:15px;}
   .widget .w-mini-chart{height:34px;margin-top:8px;}
-  .widget .w-delta{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,0.5);align-self:flex-start;margin-top:8px;}
-  .widget.w-green .w-delta{background:rgba(255,255,255,0.18);}
-  .widget .w-delta.neg{color:#7C2735;}
-  .widget.w-green .w-delta.pos{color:#DFF7E4;}
+  .widget .w-delta{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--lime);color:var(--ink);align-self:flex-start;margin-top:8px;}
+  .widget.w-green .w-delta{background:var(--lime);color:var(--ink);}
+  .widget .w-delta.neg{background:var(--guava-soft);color:#8A3242;}
+  .widget.w-green .w-delta.pos{background:var(--lime);color:var(--ink);}
 
   .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
   @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr;}}
   .kpi-card{
-    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px 16px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 17px;
     box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease;
   }
-  .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
-  .kpi-card:before{content:"";position:absolute;top:0;left:0;right:0;height:3px;}
+  .kpi-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+  .kpi-card:before{content:"";position:absolute;top:0;left:0;right:0;height:2.5px;}
   .kpi-card.ventas:before{background:var(--cibao-green);}
   .kpi-card.compras:before{background:var(--papaya);}
   .kpi-card.ganancia:before{background:var(--guava);}
@@ -171,71 +191,71 @@
 
   .chart-row{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:22px;}
   @media(max-width:820px){.chart-row{grid-template-columns:1fr;}}
-  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);}
-  .panel h3{margin:0 0 14px;font-family:'Alfa Slab One',cursive;font-weight:400;font-size:14.5px;color:var(--cibao-green);letter-spacing:0.3px;}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:21px;box-shadow:var(--shadow-sm);}
+  .panel h3{margin:0 0 14px;font-family:'Plus Jakarta Sans';font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-0.2px;}
   .panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
   .panel .panel-head h3{margin:0;}
   .chart-holder{height:224px;position:relative;}
 
-  .reg-tabs{display:flex;gap:6px;margin-bottom:0;flex-wrap:wrap;background:var(--cream);padding:5px;border-radius:12px;width:fit-content;border:1px solid var(--line);}
+  .reg-tabs{display:flex;gap:6px;margin-bottom:0;flex-wrap:wrap;background:var(--cream);padding:5px;border-radius:99px;width:fit-content;border:1px solid var(--line);}
   .reg-tabs button{
     font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;border:none;background:transparent;color:var(--ink-soft);
-    padding:8px 15px;border-radius:9px;cursor:pointer;transition:all .15s ease;
+    padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s ease;
   }
-  .reg-tabs button.active{background:var(--paper);color:var(--cibao-green);box-shadow:var(--shadow-sm);}
+  .reg-tabs button.active{background:var(--lime);color:var(--ink);box-shadow:none;}
   .form-panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm);margin:12px 0 24px;}
-  .form-panel h3{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:15px;color:var(--cibao-green);margin:0 0 14px;}
+  .form-panel h3{font-family:'Plus Jakarta Sans';font-weight:800;font-size:16px;color:var(--ink);margin:0 0 14px;letter-spacing:-0.2px;}
   .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
   @media(max-width:700px){.form-grid{grid-template-columns:1fr 1fr;}}
   .field{display:flex;flex-direction:column;gap:6px;}
   .field label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--ink-soft);}
   .field input, .field select, .field textarea{
     font-family:'Plus Jakarta Sans';font-size:14px;padding:10px 12px;border:1.5px solid var(--line);
-    border-radius:10px;background:var(--cream);color:var(--ink);transition:all .15s ease;
+    border-radius:12px;background:var(--cream);color:var(--ink);transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
   }
   .field textarea{resize:vertical;min-height:44px;font-family:inherit;}
-  .field input:hover, .field select:hover, .field textarea:hover{border-color:#D8CDB0;}
-  .field input:focus, .field select:focus, .field textarea:focus{outline:none;border-color:var(--cibao-green);background:#fff;box-shadow:0 0 0 3.5px rgba(31,77,44,0.12);}
+  .field input:hover, .field select:hover, .field textarea:hover{border-color:#CFCFD6;}
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none;border-color:var(--ink);background:#fff;box-shadow:0 0 0 3.5px rgba(20,21,15,0.08);}
   .field input:disabled{color:var(--ink-soft);cursor:not-allowed;}
   .form-actions{margin-top:16px;display:flex;justify-content:flex-end;align-items:center;gap:12px;flex-wrap:wrap;}
   .btn-add{
-    font-family:'Plus Jakarta Sans';font-weight:800;font-size:14px;color:#fff;border:none;border-radius:12px;
-    padding:12px 24px;cursor:pointer;background:linear-gradient(135deg, var(--papaya), #D4611E);
-    box-shadow:0 6px 16px -6px rgba(232,114,44,0.55);transition:transform .15s ease, box-shadow .15s ease;
+    font-family:'Plus Jakarta Sans';font-weight:800;font-size:14px;color:var(--ink);border:none;border-radius:99px;
+    padding:11px 24px;cursor:pointer;background:var(--lime);
+    box-shadow:0 4px 12px -6px rgba(20,21,15,0.25);transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
   }
-  .btn-add:hover{transform:translateY(-1px);box-shadow:0 8px 20px -6px rgba(232,114,44,0.6);}
+  .btn-add:hover{transform:translateY(-1px);background:var(--lime-dark);box-shadow:0 6px 16px -6px rgba(20,21,15,0.3);}
   .btn-add:active{transform:translateY(0px);}
   .btn-add:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
   .btn-ghost{
-    font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;background:var(--cibao-green-soft);color:var(--cibao-green);
-    border:1px solid transparent;border-radius:10px;padding:9px 16px;cursor:pointer;transition:all .15s ease;
+    font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;background:var(--cream);color:var(--ink);
+    border:1px solid var(--line);border-radius:99px;padding:9px 16px;cursor:pointer;transition:all .15s ease;
   }
-  .btn-ghost:hover{background:#DCEEE0;}
-  .btn-mini{font-family:'Plus Jakarta Sans';font-weight:700;font-size:12px;background:var(--cibao-green);color:#fff;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;transition:opacity .15s;}
-  .btn-mini:hover{opacity:0.88;}
-  .btn-mini.danger{background:var(--guava);}
+  .btn-ghost:hover{background:var(--lime);border-color:var(--lime);}
+  .btn-mini{font-family:'Plus Jakarta Sans';font-weight:700;font-size:12px;background:var(--ink);color:var(--lime);border:none;border-radius:99px;padding:7px 14px;cursor:pointer;transition:opacity .15s;}
+  .btn-mini:hover{opacity:0.85;}
+  .btn-mini.danger{background:var(--guava-soft);color:#8A3242;}
   .btn-mini.outline{background:transparent;border:1.5px solid var(--line);color:var(--ink-soft);}
-  .btn-mini.outline:hover{border-color:var(--cibao-green);color:var(--cibao-green);}
-  .btn-mini.gold{background:var(--banana);color:#5b3f00;}
+  .btn-mini.outline:hover{border-color:var(--ink);color:var(--ink);}
+  .btn-mini.gold{background:var(--lime);color:var(--ink);}
 
-  .ledger h3{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:14.5px;color:var(--cibao-green);margin-bottom:14px;}
+  .ledger h3{font-family:'Plus Jakarta Sans';font-weight:800;font-size:15px;color:var(--ink);margin-bottom:14px;letter-spacing:-0.2px;}
   .ticket{
     display:grid;grid-template-columns:auto 72px 1fr auto auto auto;align-items:center;gap:12px;
-    background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;
-    transition:border-color .15s ease, transform .15s ease;
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:16px;padding:12px 14px;margin-bottom:6px;
+    transition:border-color .15s ease, background .15s ease;
   }
-  .ticket:hover{border-color:#D8CDB0;transform:translateX(2px);}
+  .ticket:hover{border-color:var(--line);background:var(--cream);}
   @media(max-width:760px){.ticket{grid-template-columns:auto 1fr auto;}.ticket .t-cat,.ticket .t-profit,.ticket .t-date{display:none;}}
-  .t-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .t-icon{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .t-icon svg{width:16px;height:16px;}
-  .ticket.venta .t-icon{background:var(--cibao-green-soft);color:var(--cibao-green);}
+  .ticket.venta .t-icon{background:var(--cibao-green-soft);color:var(--ink);}
   .ticket.compra .t-icon{background:var(--papaya-soft);color:var(--papaya);}
   .ticket.gasto .t-icon{background:var(--guava-soft);color:var(--guava);}
   .ticket .t-date{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);white-space:nowrap;}
   .ticket .t-main{font-weight:600;font-size:13.5px;min-width:0;}
   .ticket .t-main span{display:block;font-size:11.5px;font-weight:400;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ticket .t-cat{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:4px 8px;border-radius:99px;white-space:nowrap;}
-  .ticket.venta .t-cat{background:var(--cibao-green-soft);color:var(--cibao-green);}
+  .ticket.venta .t-cat{background:var(--lime);color:var(--ink);}
   .ticket.compra .t-cat{background:var(--papaya-soft);color:var(--papaya);}
   .ticket.gasto .t-cat{background:var(--guava-soft);color:var(--guava);}
   .ticket .t-amt{font-family:'Space Mono',monospace;font-weight:700;font-size:13.5px;white-space:nowrap;}
@@ -297,6 +317,41 @@
   .qc-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
   .rm-line{background:var(--guava-soft);border:none;color:var(--guava);width:34px;height:38px;border-radius:8px;font-size:16px;cursor:pointer;}
 
+  /* ---------- PEDIDOS (mapa de entrega) ---------- */
+  .order-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;}
+  @media(max-width:980px){.order-layout{grid-template-columns:1fr;}}
+  .addr-row{display:flex;gap:8px;align-items:flex-end;}
+  .addr-row .field{flex:1;margin:0;}
+  .btn-locate{
+    font-family:'Plus Jakarta Sans';font-weight:700;font-size:12.5px;background:var(--cibao-green);color:#fff;
+    border:none;border-radius:10px;padding:10px 14px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;
+    transition:opacity .15s ease;
+  }
+  .btn-locate:hover{opacity:0.9;}
+  .btn-locate:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-locate svg{width:14px;height:14px;}
+  .geo-status{font-size:12px;color:var(--ink-soft);margin-top:6px;min-height:16px;}
+  .geo-status.ok{color:var(--cibao-green);font-weight:600;}
+  .geo-status.err{color:var(--guava);font-weight:600;}
+  .map-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow-sm);}
+  .map-holder{height:290px;border-radius:var(--radius-sm);overflow:hidden;background:var(--cream);}
+  .map-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+  .map-legend span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);}
+  .map-legend .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .map-legend .dot.origin{background:var(--cibao-green);}
+  .map-legend .dot.dest{background:var(--guava);}
+  .distance-chip{display:inline-flex;align-items:center;gap:7px;background:var(--cibao-green-soft);color:var(--cibao-green);
+    font-family:'Space Mono',monospace;font-weight:700;font-size:13px;padding:8px 14px;border-radius:99px;margin-top:12px;}
+  .distance-chip svg{width:15px;height:15px;}
+  .order-card{background:var(--cream);border:1px solid var(--line);border-radius:var(--radius-sm);padding:15px 17px;margin-bottom:12px;}
+  .order-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;}
+  .order-top .o-title{font-weight:700;font-size:14.5px;}
+  .order-top .o-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .order-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--ink-soft);}
+  .order-meta b{color:var(--ink);font-weight:700;}
+  .qc-status.EnCamino{background:var(--banana-soft);color:#7A5306;}
+  .qc-status.Entregado{background:var(--cibao-green-soft);color:var(--cibao-green);}
+
   /* ---------- CLIENTES ---------- */
   .client-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:10px;transition:box-shadow .15s ease;}
   .client-card:hover{box-shadow:var(--shadow-sm);}
@@ -328,7 +383,7 @@
   /* ---------- RIGHT COLUMN: CALENDAR + TIMELINE ---------- */
   .cal-panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);margin-bottom:16px;}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .cal-head .cal-title{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:13.5px;color:var(--cibao-green);text-transform:capitalize;}
+  .cal-head .cal-title{font-family:'Plus Jakarta Sans';font-weight:800;font-size:13.5px;color:var(--cibao-green);text-transform:capitalize;}
   .cal-nav{display:flex;gap:4px;}
   .cal-nav button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);}
   .cal-nav button:hover{color:var(--cibao-green);border-color:var(--cibao-green);}
@@ -336,13 +391,13 @@
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;}
   .cal-grid .cal-dow{font-size:9.5px;font-weight:700;color:var(--ink-soft);padding-bottom:6px;}
   .cal-day{position:relative;font-size:11.5px;padding:6px 0;border-radius:8px;color:var(--ink);cursor:default;}
-  .cal-day.mute{color:#D8CDB0;}
+  .cal-day.mute{color:#D2D2DA;}
   .cal-day.today{background:var(--cibao-green);color:#fff;font-weight:700;}
   .cal-day .cal-dot{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--guava);}
   .cal-day.today .cal-dot{background:#fff;}
 
   .timeline-panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);}
-  .timeline-panel h3{margin:0 0 4px;font-family:'Alfa Slab One',cursive;font-weight:400;font-size:13.5px;color:var(--cibao-green);}
+  .timeline-panel h3{margin:0 0 4px;font-family:'Plus Jakarta Sans';font-weight:800;font-size:13.5px;color:var(--cibao-green);}
   .timeline-panel .tp-date{font-size:11px;color:var(--ink-soft);margin-bottom:12px;font-family:'Space Mono',monospace;}
   .tl-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
   .tl-item:last-child{border-bottom:none;}
@@ -392,12 +447,12 @@
     body{padding-bottom:0;}
     .mobile-topbrand{
       display:flex;align-items:center;gap:10px;padding:14px 14px 10px;position:sticky;top:0;z-index:45;
-      background:rgba(250,246,238,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
     }
     .mobile-topbrand .mark{width:34px;height:34px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--cibao-green);}
     .mobile-topbrand .mark img{width:100%;height:100%;object-fit:cover;}
-    .mobile-topbrand h1{font-family:'Alfa Slab One',cursive;font-weight:400;font-size:16px;margin:0;color:var(--cibao-green);}
-    .mobile-topbrand .sync-dot{width:8px;height:8px;border-radius:50%;background:#D8CDB0;margin-left:auto;}
+    .mobile-topbrand h1{font-family:'Plus Jakarta Sans';font-weight:800;font-size:16px;margin:0;color:var(--cibao-green);}
+    .mobile-topbrand .sync-dot{width:8px;height:8px;border-radius:50%;background:#D2D2DA;margin-left:auto;}
     .mobile-topbrand .sync-dot.ok{background:var(--cibao-green);}
     .mobile-topbrand .sync-dot.err{background:var(--guava);}
     .bottom-nav{
@@ -432,24 +487,25 @@
 
     <div class="side-group-label">Panel</div>
     <nav class="side-nav" id="sideNavTop">
-      <button data-view="resumen" class="active"><svg viewBox="0 0 24 24"><path d="M4 19V10M12 19V5M20 19v-7"/></svg><span>Resumen</span></button>
-      <button data-view="registro"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Registrar</span></button>
-      <button data-view="clientes"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Clientes</span></button>
-      <button data-view="recurrentes"><svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>Recurrentes</span><span class="badge-dot" id="recurBadge" style="display:none;">0</span></button>
-      <button data-view="reportes"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg><span>Reportes</span></button>
+      <button title="Resumen" data-view="resumen" class="active"><svg viewBox="0 0 24 24"><path d="M4 19V10M12 19V5M20 19v-7"/></svg><span>Resumen</span></button>
+      <button title="Registrar" data-view="registro"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Registrar</span></button>
+      <button title="Pedidos" data-view="pedidos"><svg viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 4.6A1 1 0 0 0 5.6 19H19"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg><span>Pedidos</span><span class="badge-dot" id="pedidosBadge" style="display:none;">0</span></button>
+      <button title="Clientes" data-view="clientes"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Clientes</span></button>
+      <button title="Recurrentes" data-view="recurrentes"><svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>Recurrentes</span><span class="badge-dot" id="recurBadge" style="display:none;">0</span></button>
+      <button title="Reportes" data-view="reportes"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg><span>Reportes</span></button>
     </nav>
 
     <div class="side-group-label">Catálogo</div>
     <nav class="side-nav" id="sideNavCat">
-      <button data-view="cotizaciones"><svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4"/></svg><span>Cotizaciones</span></button>
-      <button data-view="boxes"><svg viewBox="0 0 24 24"><path d="m3.5 8 8.5-4 8.5 4-8.5 4-8.5-4Z"/><path d="M3.5 8v8l8.5 4 8.5-4V8M12 12v8"/></svg><span>Boxes</span></button>
-      <button data-view="productos"><svg viewBox="0 0 24 24"><path d="M10 3h8a1 1 0 0 1 1 1v8l-9.6 9.6a1 1 0 0 1-1.4 0L2.4 16a1 1 0 0 1 0-1.4L12 5"/><circle cx="15.5" cy="7.5" r="1.3"/></svg><span>Productos</span></button>
+      <button title="Cotizaciones" data-view="cotizaciones"><svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v16l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4"/></svg><span>Cotizaciones</span></button>
+      <button title="Boxes" data-view="boxes"><svg viewBox="0 0 24 24"><path d="m3.5 8 8.5-4 8.5 4-8.5 4-8.5-4Z"/><path d="M3.5 8v8l8.5 4 8.5-4V8M12 12v8"/></svg><span>Boxes</span></button>
+      <button title="Productos" data-view="productos"><svg viewBox="0 0 24 24"><path d="M10 3h8a1 1 0 0 1 1 1v8l-9.6 9.6a1 1 0 0 1-1.4 0L2.4 16a1 1 0 0 1 0-1.4L12 5"/><circle cx="15.5" cy="7.5" r="1.3"/></svg><span>Productos</span></button>
     </nav>
 
     <div class="side-foot">
       <div class="side-group-label" style="margin-top:0;">Cuenta</div>
       <nav class="side-nav">
-        <button data-view="config"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1Z"/></svg><span>Configuración</span></button>
+        <button title="Configuración" data-view="config"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1Z"/></svg><span>Configuración</span></button>
       </nav>
       <div class="sync-row"><span class="sync-dot" id="syncDot"></span><span id="syncLabel">Verificando conexión…</span></div>
     </div>
@@ -615,6 +671,58 @@
           </div>
         </section>
 
+        <!-- ===================== PEDIDOS (entrega + mapa) ===================== -->
+        <section class="view" id="view-pedidos">
+          <div class="order-layout">
+            <div class="quote-builder" style="margin-bottom:0;">
+              <h3 style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:15px;color:var(--cibao-green);margin:0 0 14px;">Nuevo pedido</h3>
+              <div class="form-grid" style="margin-bottom:14px;">
+                <div class="field"><label>Cliente</label><input type="text" id="oCliente" list="clientList" placeholder="Nombre del cliente"></div>
+                <div class="field"><label>Teléfono (WhatsApp)</label><input type="tel" id="oTelefono" placeholder="8091234567"></div>
+                <div class="field"><label>Fecha de entrega</label><input type="date" id="oFechaEntrega"></div>
+              </div>
+              <div class="field" style="margin-bottom:6px;"><label>Hora de entrega (opcional)</label><input type="time" id="oHoraEntrega" style="max-width:160px;"></div>
+
+              <div class="field" style="margin:14px 0 4px;"><label>Dirección de entrega</label></div>
+              <div class="addr-row">
+                <div class="field"><input type="text" id="oDireccion" placeholder="Calle, sector, referencia — ej. Los Jardines, Santiago"></div>
+                <button type="button" class="btn-locate" id="locateBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Ubicar</button>
+              </div>
+              <div class="geo-status" id="geoStatus"></div>
+
+              <div id="orderLines" style="margin-top:16px;"></div>
+              <button type="button" class="btn-ghost" id="addOrderLineBtn">+ Agregar producto</button>
+              <div class="quote-total-row">
+                <span>Total del pedido</span>
+                <span class="qt-amt" id="orderTotal">RD$0</span>
+              </div>
+              <div class="form-actions">
+                <span class="config-status" id="statusOrder"></span>
+                <button type="button" class="btn-add" id="saveOrderBtn">Guardar pedido</button>
+              </div>
+            </div>
+
+            <div class="map-card">
+              <h3 style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:14.5px;color:var(--cibao-green);margin:0 0 12px;">Mapa de entrega</h3>
+              <div class="map-holder" id="orderMap"></div>
+              <div class="map-legend">
+                <span><span class="dot origin"></span>Salida (El Conuco)</span>
+                <span><span class="dot dest"></span>Punto de entrega</span>
+              </div>
+              <div class="distance-chip" id="distanceChip" style="display:none;">
+                <svg viewBox="0 0 24 24"><path d="M9 20l-5.5-2.2A1 1 0 0 1 3 17V4l6 2m0 14 6-2m-6 2V6m6 12 5.5 2.2A1 1 0 0 0 21 19V6a1 1 0 0 0-.6-.9L15 3m0 15V3"/></svg>
+                <span id="distanceValue">—</span>
+              </div>
+              <p style="font-size:11.5px;color:var(--ink-soft);margin-top:10px;line-height:1.5;">La distancia se calcula por ruta de manejo cuando es posible; si el servicio de rutas no responde, se muestra la distancia en línea recta.</p>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:20px;">
+            <h3>Pedidos programados</h3>
+            <div id="orderList"></div>
+          </div>
+        </section>
+
         <!-- ===================== CLIENTES ===================== -->
         <section class="view" id="view-clientes">
           <div class="form-panel">
@@ -682,7 +790,7 @@
         <!-- ===================== COTIZACIONES ===================== -->
         <section class="view" id="view-cotizaciones">
           <div class="quote-builder">
-            <h3 style="font-family:'Alfa Slab One',cursive;font-weight:400;font-size:15px;color:var(--cibao-green);margin:0 0 14px;">Nueva cotización</h3>
+            <h3 style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:15px;color:var(--cibao-green);margin:0 0 14px;">Nueva cotización</h3>
             <div class="form-grid" style="margin-bottom:16px;">
               <div class="field"><label>Cliente</label><input type="text" id="qCliente" list="clientList" placeholder="Nombre del cliente"></div>
               <div class="field"><label>Teléfono (WhatsApp)</label><input type="tel" id="qTelefono" placeholder="8091234567"></div>
@@ -709,7 +817,7 @@
         <!-- ===================== BOXES ===================== -->
         <section class="view" id="view-boxes">
           <div class="quote-builder">
-            <h3 id="boxBuilderTitle" style="font-family:'Alfa Slab One',cursive;font-weight:400;font-size:15px;color:var(--cibao-green);margin:0 0 14px;">Armar un box nuevo</h3>
+            <h3 id="boxBuilderTitle" style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:15px;color:var(--cibao-green);margin:0 0 14px;">Armar un box nuevo</h3>
             <div class="form-grid" style="margin-bottom:16px;grid-template-columns:1fr;">
               <div class="field"><label>Nombre del box</label><input type="text" id="boxNombre" placeholder="Box El Semanal de la Casa"></div>
             </div>
@@ -820,7 +928,7 @@
         <!-- ===================== CONFIGURACIÓN ===================== -->
         <section class="view" id="view-config">
           <div class="panel config-box">
-            <h3 style="font-family:'Alfa Slab One',cursive;font-weight:400;font-size:16px;color:var(--cibao-green);">Conectar tu Google Sheet</h3>
+            <h3 style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:16px;color:var(--cibao-green);">Conectar tu Google Sheet</h3>
             <p>Este panel guarda todo en un Google Sheet tuyo, gratis, usando Apps Script como puente. Pega aquí la URL de tu Apps Script que termina en <code>/exec</code>.</p>
             <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
             <div class="form-actions" style="justify-content:flex-start;">
@@ -828,7 +936,7 @@
               <span class="config-status" id="configStatus"></span>
             </div>
 
-            <h3 style="margin-top:26px;font-family:'Alfa Slab One',cursive;font-weight:400;font-size:14px;color:var(--cibao-green);">Pestañas necesarias</h3>
+            <h3 style="margin-top:26px;font-family:'Plus Jakarta Sans';font-weight:800;font-size:14px;color:var(--cibao-green);">Pestañas necesarias</h3>
             <p style="margin-bottom:8px;">Tu Google Sheet necesita estas pestañas con estos encabezados exactos en la primera fila:</p>
             <ul class="sheet-tab-list">
               <li><b>Ventas</b>Fecha, Cliente, Producto, Cantidad, Precio, Costo, Metodo</li>
@@ -842,8 +950,17 @@
             <ul class="sheet-tab-list new">
               <li><b>Clientes</b>Nombre, Telefono, Direccion, Notas, FechaAlta</li>
               <li><b>Recurrentes</b>Cliente, Telefono, Producto, Cantidad, Precio, Frecuencia, ProximaFecha, Activo, Notas</li>
+              <li><b>Pedidos</b>Fecha, Cliente, Telefono, Direccion, Lat, Lng, FechaEntrega, HoraEntrega, Detalle, Total, DistanciaKm, Estado</li>
             </ul>
             <p style="font-size:12.5px;">Si tu panel deja de conectar después de agregar las pestañas nuevas, revisa que los nombres de las columnas estén escritos exactamente igual (sin acentos ni espacios extra).</p>
+
+            <h3 style="margin-top:26px;font-family:'Plus Jakarta Sans';font-weight:800;font-size:14px;color:var(--cibao-green);">Punto de salida para el mapa de Pedidos</h3>
+            <p>Escribe la dirección desde donde salen las entregas (tu almacén o local). Se usa para calcular la distancia en el mapa de Pedidos.</p>
+            <input type="text" id="originAddressInput" placeholder="Ej. Los Jardines Metropolitanos, Santiago de los Caballeros">
+            <div class="form-actions" style="justify-content:flex-start;">
+              <button class="btn-add" id="saveOriginBtn">Guardar punto de salida</button>
+              <span class="config-status" id="originStatus"></span>
+            </div>
           </div>
         </section>
 
@@ -885,6 +1002,7 @@
 <div class="bottom-nav">
   <button data-view="resumen" class="active"><svg viewBox="0 0 24 24"><path d="M4 19V10M12 19V5M20 19v-7"/></svg><span>Resumen</span></button>
   <button data-view="registro"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Registrar</span></button>
+  <button data-view="pedidos"><svg viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-2.3 4.6A1 1 0 0 0 5.6 19H19"/><circle cx="9" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg><span>Pedidos</span></button>
   <button data-view="clientes"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Clientes</span></button>
   <button data-view="recurrentes"><svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg><span>Recurr.</span></button>
   <button data-view="reportes"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 3 5-8"/></svg><span>Reportes</span></button>
@@ -896,16 +1014,35 @@
 
 <script>
 const CONFIG_KEY = 'el-conuco-config-v1';
+const ORIGIN_KEY = 'el-conuco-origin-v1';
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const DOW = ["Lu","Ma","Mi","Ju","Vi","Sá","Do"];
 let SCRIPT_URL = '';
-let DATA = { ventas: [], compras: [], gastos: [], productos: [], cotizaciones: [], boxes: [], clientes: [], recurrentes: [] };
+let DATA = { ventas: [], compras: [], gastos: [], productos: [], cotizaciones: [], boxes: [], clientes: [], recurrentes: [], pedidos: [] };
 let trendChartInstance = null, productChartInstance = null;
 let quoteLineItems = [];
 let boxLineItems = [];
+let orderLineItems = [];
 let editingBoxRow = null;
 let calViewYear, calViewMonth;
 let reportYear, reportMonth;
+
+/* ---- Origen para el mapa de pedidos ---- */
+let ORIGIN = { address:'', lat:19.4517, lng:-70.6970 }; // por defecto: Santiago de los Caballeros, DO
+let orderMapInstance = null, originMarker = null, destMarker = null, routeLine = null;
+let pendingDest = null; // {lat, lng, distanceKm, address}
+
+async function loadOrigin(){
+  try{
+    const res = await window.storage.get(ORIGIN_KEY, false);
+    if(res && res.value){ ORIGIN = JSON.parse(res.value); }
+  }catch(e){}
+  document.getElementById('originAddressInput').value = ORIGIN.address || '';
+}
+async function saveOriginConfig(address, lat, lng){
+  ORIGIN = { address, lat, lng };
+  try{ await window.storage.set(ORIGIN_KEY, JSON.stringify(ORIGIN), false); }catch(e){}
+}
 
 function fmt(n){ return 'RD$' + Number(n||0).toLocaleString('es-DO', {minimumFractionDigits:0, maximumFractionDigits:0}); }
 function showToast(msg, type){
@@ -950,12 +1087,16 @@ async function apiList(sheet){
 async function apiAdd(sheet, data){
   const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'add', sheet, data }) });
   if(!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  const json = await res.json();
+  if(json && json.error) throw new Error(json.error);
+  return json;
 }
 async function apiDelete(sheet, row){
   const res = await fetch(SCRIPT_URL + '?action=delete&sheet=' + encodeURIComponent(sheet) + '&row=' + row);
   if(!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  const json = await res.json();
+  if(json && json.error) throw new Error(json.error);
+  return json;
 }
 async function apiReplace(sheet, row, data){
   await apiDelete(sheet, row);
@@ -974,9 +1115,9 @@ function todayISO(){ return new Date().toISOString().slice(0,10); }
 async function loadAllData(){
   const results = await Promise.allSettled([
     apiList('Ventas'), apiList('Compras'), apiList('Gastos'), apiList('Productos'),
-    apiList('Cotizaciones'), apiList('Boxes'), apiList('Clientes'), apiList('Recurrentes')
+    apiList('Cotizaciones'), apiList('Boxes'), apiList('Clientes'), apiList('Recurrentes'), apiList('Pedidos')
   ]);
-  const [ventasR, comprasR, gastosR, prodR, cotR, boxR, cliR, recR] = results;
+  const [ventasR, comprasR, gastosR, prodR, cotR, boxR, cliR, recR, pedR] = results;
   if(ventasR.status!=='fulfilled') throw ventasR.reason;
 
   DATA.ventas = (ventasR.value||[]).map(v=>({ _row:v._row, fecha:toISODate(v.Fecha), quien:v.Cliente, producto:v.Producto, cantidad:Number(v.Cantidad)||0, precio:Number(v.Precio)||0, costo:Number(v.Costo)||0, metodo:v.Metodo }));
@@ -995,6 +1136,11 @@ async function loadAllData(){
   });
   DATA.clientes = (cliR.status==='fulfilled' ? cliR.value : []).map(c=>({ _row:c._row, nombre:c.Nombre, telefono:c.Telefono||'', direccion:c.Direccion||'', notas:c.Notas||'', fechaAlta:toISODate(c.FechaAlta) }));
   DATA.recurrentes = (recR.status==='fulfilled' ? recR.value : []).map(r=>({ _row:r._row, cliente:r.Cliente, telefono:r.Telefono||'', producto:r.Producto, cantidad:Number(r.Cantidad)||0, precio:Number(r.Precio)||0, frecuencia:r.Frecuencia||'Semanal', proximaFecha:toISODate(r.ProximaFecha), activo:String(r.Activo).toLowerCase()!=='no' && String(r.Activo)!=='false', notas:r.Notas||'' }));
+  DATA.pedidos = (pedR.status==='fulfilled' ? pedR.value : []).map(p=>{
+    let items = [];
+    try{ items = JSON.parse(p.Detalle); }catch(e){ items = []; }
+    return { _row:p._row, fecha:toISODate(p.Fecha), cliente:p.Cliente, telefono:p.Telefono||'', direccion:p.Direccion||'', lat:Number(p.Lat)||null, lng:Number(p.Lng)||null, fechaEntrega:toISODate(p.FechaEntrega), horaEntrega:p.HoraEntrega||'', items, total:Number(p.Total)||0, distanciaKm:Number(p.DistanciaKm)||0, estado:p.Estado||'Pendiente' };
+  });
 
   refreshDatalists();
 }
@@ -1065,6 +1211,10 @@ function render(){
   const bellCount = document.getElementById('bellCount');
   if(entregasHoyCount>0){ bellCount.style.display='block'; bellCount.textContent = entregasHoyCount; } else { bellCount.style.display='none'; }
 
+  const pedidosHoyCount = DATA.pedidos.filter(p=>p.estado!=='Entregado' && p.fechaEntrega===todayISO()).length;
+  const pedidosBadge = document.getElementById('pedidosBadge');
+  if(pedidosHoyCount>0){ pedidosBadge.style.display='inline-block'; pedidosBadge.textContent = pedidosHoyCount; } else { pedidosBadge.style.display='none'; }
+
   renderTrendChart(y,m);
   renderProductChart(y,m);
   renderLedger();
@@ -1074,6 +1224,7 @@ function render(){
   renderBoxList();
   renderClientesList();
   renderRecurrentesList();
+  renderOrderList();
   renderTodayTimeline();
   renderMiniCalendar();
   renderSideTopClients(m,y);
@@ -1182,7 +1333,7 @@ document.getElementById('saveBoxBtn').addEventListener('click', async ()=>{
     resetBoxBuilder();
     statusEl.textContent = '¡Box guardado!'; statusEl.className='config-status ok'; showToast('Box guardado con éxito');
     setTimeout(()=>{ statusEl.textContent=''; }, 2500);
-  }catch(err){ statusEl.textContent = 'No se pudo guardar.'; statusEl.className='config-status err'; }
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
 });
 
 document.getElementById('cancelEditBoxBtn').addEventListener('click', resetBoxBuilder);
@@ -1235,7 +1386,7 @@ function renderBoxList(){
           if(prod){ await apiDelete('Productos', prod._row); }
         }
         await loadAllData(); render();
-      }catch(e){ showToast('No se pudo eliminar el box.','error'); }
+      }catch(e){ showToast('No se pudo eliminar: ' + (e && e.message ? e.message : 'error desconocido'),'error'); }
     });
   });
 }
@@ -1254,12 +1405,12 @@ function renderTrendChart(y,m){
   trendChartInstance = new Chart(ctx, {
     type:'bar',
     data:{ labels, datasets:[
-      {label:'Ventas', data:ventasArr, backgroundColor:'#1F4D2C', borderRadius:4, maxBarThickness:26},
-      {label:'Compras + Gastos', data:gastosArr, backgroundColor:'#E8722C', borderRadius:4, maxBarThickness:26}
+      {label:'Ventas', data:ventasArr, backgroundColor:'#151611', borderRadius:6, maxBarThickness:26},
+      {label:'Compras + Gastos', data:gastosArr, backgroundColor:'#D6FF3F', borderRadius:6, maxBarThickness:26}
     ]},
     options:{ responsive:true, maintainAspectRatio:false,
       plugins:{legend:{position:'bottom', labels:{font:{family:'Plus Jakarta Sans', size:11}, boxWidth:10, usePointStyle:true, pointStyle:'circle'}}},
-      scales:{ y:{grid:{color:'#EAE0C8'}, ticks:{font:{family:'Space Mono', size:10}, callback:v=>'RD$'+v}}, x:{grid:{display:false}, ticks:{font:{family:'Plus Jakarta Sans', size:11}}} }
+      scales:{ y:{grid:{color:'#ECECF0'}, ticks:{font:{family:'Space Mono', size:10}, callback:v=>'RD$'+v}}, x:{grid:{display:false}, ticks:{font:{family:'Plus Jakarta Sans', size:11}}} }
     }
   });
 }
@@ -1269,13 +1420,13 @@ function renderProductChart(y,m){
   const byProd = {};
   ventasMes.forEach(v=>{ byProd[v.producto] = (byProd[v.producto]||0) + v.cantidad*v.precio; });
   const labels = Object.keys(byProd), values = Object.values(byProd);
-  const palette = ['#1F4D2C','#E8722C','#F4B942','#C1495A','#6b8f6f','#a8763a'];
+  const palette = ['#151611','#D6FF3F','#E07234','#EA5B6F','#8C8C93','#B8E01A'];
   const ctx = document.getElementById('productChart');
   if(productChartInstance) productChartInstance.destroy();
   if(labels.length===0){ ctx.getContext('2d').clearRect(0,0,ctx.width,ctx.height); return; }
   productChartInstance = new Chart(ctx, {
     type:'doughnut',
-    data:{ labels, datasets:[{data:values, backgroundColor:labels.map((_,i)=>palette[i%palette.length]), borderWidth:2, borderColor:'#F5ECDC'}] },
+    data:{ labels, datasets:[{data:values, backgroundColor:labels.map((_,i)=>palette[i%palette.length]), borderWidth:2, borderColor:'#FFFFFF'}] },
     options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
       plugins:{legend:{position:'bottom', labels:{font:{family:'Plus Jakarta Sans', size:10.5}, boxWidth:9, usePointStyle:true, pointStyle:'circle'}}}
     }
@@ -1328,7 +1479,7 @@ function attachDeleteHandlers(container){
     btn.addEventListener('click', async ()=>{
       btn.disabled = true;
       try{ await apiDelete(btn.dataset.sheet, btn.dataset.row); await loadAllData(); render(); }
-      catch(e){ showToast('No se pudo eliminar. Revisa tu conexión.','error'); }
+      catch(e){ showToast('No se pudo eliminar: ' + (e && e.message ? e.message : 'revisa tu conexión.'),'error'); }
     });
   });
 }
@@ -1339,6 +1490,10 @@ function goto(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   window.scrollTo({top:0, behavior:'instant'});
+  if(view==='pedidos'){
+    initOrderMap();
+    setTimeout(()=>{ if(orderMapInstance) orderMapInstance.invalidateSize(); }, 120);
+  }
 }
 document.querySelectorAll('.side-nav button, .bottom-nav button').forEach(btn=> btn.addEventListener('click', ()=> goto(btn.dataset.view)));
 document.getElementById('gearBtn').addEventListener('click', ()=> goto('config'));
@@ -1384,7 +1539,7 @@ function setupForm(id, sheetName, statusId){
       statusEl.textContent = '¡Guardado!'; statusEl.className = 'config-status ok'; showToast('Registrado con éxito');
       setTimeout(()=>{ statusEl.textContent=''; }, 2500);
     }catch(err){
-      statusEl.textContent = 'No se pudo guardar. Revisa la conexión.'; statusEl.className = 'config-status err';
+      statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'revisa la conexión.'); statusEl.className = 'config-status err';
     }
     submitBtn.disabled = false;
   });
@@ -1407,7 +1562,7 @@ document.getElementById('form-producto').addEventListener('submit', async (e)=>{
     e.target.reset();
     statusEl.textContent = '¡Agregado!'; statusEl.className='config-status ok'; showToast('Producto agregado al catálogo');
     setTimeout(()=>{ statusEl.textContent=''; }, 2000);
-  }catch(err){ statusEl.textContent = 'No se pudo guardar.'; statusEl.className='config-status err'; }
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
 });
 
 function renderProductTable(){
@@ -1492,7 +1647,7 @@ document.getElementById('saveQuoteBtn').addEventListener('click', async ()=>{
     document.getElementById('qTelefono').value='';
     statusEl.textContent = '¡Cotización guardada!'; statusEl.className='config-status ok'; showToast('Cotización guardada');
     setTimeout(()=>{ statusEl.textContent=''; }, 2500);
-  }catch(err){ statusEl.textContent = 'No se pudo guardar.'; statusEl.className='config-status err'; }
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
 });
 
 function buildQuoteMessage(q){
@@ -1539,7 +1694,7 @@ function renderQuoteList(){
         await apiDelete('Cotizaciones', q._row);
         await apiAdd('Cotizaciones', { Fecha:q.fecha, Cliente:q.cliente, Telefono:q.telefono||'', Detalle:JSON.stringify(q.items), Total:q.total, Estado:'Convertida' });
         await loadAllData(); render();
-      }catch(err){ showToast('No se pudo convertir la cotización.','error'); btn.disabled=false; btn.textContent='Convertir en venta'; }
+      }catch(err){ showToast('No se pudo convertir: ' + (err && err.message ? err.message : 'error desconocido'),'error'); btn.disabled=false; btn.textContent='Convertir en venta'; }
     });
   });
   el.querySelectorAll('.del-quote-btn').forEach(btn=>{
@@ -1549,6 +1704,243 @@ function renderQuoteList(){
     });
   });
 }
+
+/* ================= PEDIDOS (nuevo pedido + mapa de entrega) ================= */
+function haversineKm(lat1, lng1, lat2, lng2){
+  const R = 6371;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLng = (lng2-lng1) * Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function dotIcon(color){
+  return L.divIcon({ className:'', html:`<div style="width:16px;height:16px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,0.4);"></div>`, iconSize:[16,16], iconAnchor:[8,8] });
+}
+function initOrderMap(){
+  if(orderMapInstance) return;
+  orderMapInstance = L.map('orderMap', { attributionControl:false, zoomControl:true }).setView([ORIGIN.lat, ORIGIN.lng], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19 }).addTo(orderMapInstance);
+  L.control.attribution({ prefix:false }).addAttribution('© OpenStreetMap').addTo(orderMapInstance);
+  originMarker = L.marker([ORIGIN.lat, ORIGIN.lng], { icon:dotIcon('#151611') }).addTo(orderMapInstance);
+}
+function moveOriginMarker(){
+  if(!orderMapInstance) return;
+  if(originMarker) originMarker.setLatLng([ORIGIN.lat, ORIGIN.lng]);
+  orderMapInstance.setView([ORIGIN.lat, ORIGIN.lng], orderMapInstance.getZoom());
+}
+async function geocodeAddress(query){
+  const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(query);
+  const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+  if(!res.ok) throw new Error('No se pudo buscar la dirección.');
+  const data = await res.json();
+  if(!data || data.length===0) throw new Error('No se encontró esa dirección. Prueba con más detalle (sector, ciudad).');
+  return { lat:Number(data[0].lat), lng:Number(data[0].lon), label:data[0].display_name };
+}
+async function fetchRouteKm(oLat,oLng,dLat,dLng){
+  try{
+    const url = `https://router.project-osrm.org/route/v1/driving/${oLng},${oLat};${dLng},${dLat}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('routing failed');
+    const data = await res.json();
+    if(!data.routes || !data.routes.length) throw new Error('no route');
+    const coords = data.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);
+    return { km: data.routes[0].distance/1000, path: coords, byRoad:true };
+  }catch(e){
+    return { km: haversineKm(oLat,oLng,dLat,dLng), path: [[oLat,oLng],[dLat,dLng]], byRoad:false };
+  }
+}
+function drawRouteOnMap(oLat,oLng,dLat,dLng,path){
+  if(!orderMapInstance) return;
+  if(destMarker){ orderMapInstance.removeLayer(destMarker); }
+  if(routeLine){ orderMapInstance.removeLayer(routeLine); }
+  destMarker = L.marker([dLat,dLng], { icon:dotIcon('#EA5B6F') }).addTo(orderMapInstance);
+  routeLine = L.polyline(path, { color:'#EA5B6F', weight:4, opacity:0.85, dashArray: path.length===2 ? '6 8' : null }).addTo(orderMapInstance);
+  orderMapInstance.fitBounds(L.latLngBounds([[oLat,oLng],[dLat,dLng]]), { padding:[36,36], maxZoom:15 });
+}
+
+function addOrderLine(){
+  const id = 'ol'+Math.random().toString(36).slice(2,8);
+  orderLineItems.push({id, producto:'', cantidad:1, precio:0});
+  renderOrderLines();
+}
+function renderOrderLines(){
+  const el = document.getElementById('orderLines');
+  el.innerHTML = orderLineItems.map(li=>`
+    <div class="quote-line" data-id="${li.id}">
+      <div class="field"><label>Producto</label><input type="text" list="productList" class="ol-producto" value="${li.producto}" placeholder="Nombre del producto"></div>
+      <div class="field"><label>Cant.</label><input type="number" min="1" class="ol-cantidad" value="${li.cantidad}"></div>
+      <div class="field"><label>Precio (RD$)</label><input type="number" min="0" step="0.01" class="ol-precio" value="${li.precio}"></div>
+      <div class="field"><label>Subtotal</label><input type="text" disabled value="${fmt(li.cantidad*li.precio)}"></div>
+      <button type="button" class="rm-line" data-id="${li.id}" title="Quitar">✕</button>
+    </div>`).join('');
+  el.querySelectorAll('.quote-line').forEach(row=>{
+    const id = row.dataset.id;
+    const item = orderLineItems.find(x=>x.id===id);
+    row.querySelector('.ol-producto').addEventListener('input', e=>{ item.producto = e.target.value; });
+    row.querySelector('.ol-producto').addEventListener('change', e=>{
+      const match = DATA.productos.find(p=>p.nombre.toLowerCase()===e.target.value.toLowerCase());
+      if(match){ item.precio = match.precio; renderOrderLines(); updateOrderTotal(); }
+    });
+    row.querySelector('.ol-cantidad').addEventListener('input', e=>{ item.cantidad = Number(e.target.value)||0; updateOrderTotal(); row.querySelector('.field:nth-child(4) input').value = fmt(item.cantidad*item.precio); });
+    row.querySelector('.ol-precio').addEventListener('input', e=>{ item.precio = Number(e.target.value)||0; updateOrderTotal(); row.querySelector('.field:nth-child(4) input').value = fmt(item.cantidad*item.precio); });
+  });
+  el.querySelectorAll('.rm-line').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ orderLineItems = orderLineItems.filter(x=>x.id!==btn.dataset.id); renderOrderLines(); updateOrderTotal(); });
+  });
+  updateOrderTotal();
+}
+function updateOrderTotal(){
+  const total = orderLineItems.reduce((s,i)=> s + i.cantidad*i.precio, 0);
+  document.getElementById('orderTotal').textContent = fmt(total);
+}
+document.getElementById('addOrderLineBtn').addEventListener('click', addOrderLine);
+
+document.getElementById('locateBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('locateBtn');
+  const geoStatus = document.getElementById('geoStatus');
+  const direccion = document.getElementById('oDireccion').value.trim();
+  if(!direccion){ geoStatus.textContent = 'Escribe primero la dirección de entrega.'; geoStatus.className = 'geo-status err'; return; }
+  btn.disabled = true; geoStatus.textContent = 'Buscando dirección…'; geoStatus.className = 'geo-status';
+  try{
+    const geo = await geocodeAddress(direccion + (direccion.toLowerCase().includes('dominicana') ? '' : ', República Dominicana'));
+    geoStatus.textContent = 'Calculando ruta…';
+    const route = await fetchRouteKm(ORIGIN.lat, ORIGIN.lng, geo.lat, geo.lng);
+    pendingDest = { lat:geo.lat, lng:geo.lng, distanceKm:route.km, address:direccion };
+    drawRouteOnMap(ORIGIN.lat, ORIGIN.lng, geo.lat, geo.lng, route.path);
+    document.getElementById('distanceChip').style.display = 'inline-flex';
+    document.getElementById('distanceValue').textContent = route.km.toFixed(1) + ' km' + (route.byRoad ? ' por carretera' : ' en línea recta');
+    geoStatus.textContent = '✓ Ubicado en el mapa.'; geoStatus.className = 'geo-status ok';
+  }catch(err){
+    pendingDest = null;
+    geoStatus.textContent = err && err.message ? err.message : 'No se pudo ubicar la dirección.'; geoStatus.className = 'geo-status err';
+  }
+  btn.disabled = false;
+});
+
+document.getElementById('saveOrderBtn').addEventListener('click', async ()=>{
+  if(!SCRIPT_URL){ goto('config'); return; }
+  const statusEl = document.getElementById('statusOrder');
+  const cliente = document.getElementById('oCliente').value.trim();
+  const telefono = document.getElementById('oTelefono').value.trim();
+  const direccion = document.getElementById('oDireccion').value.trim();
+  const fechaEntrega = document.getElementById('oFechaEntrega').value;
+  const horaEntrega = document.getElementById('oHoraEntrega').value;
+  const items = orderLineItems.filter(i=>i.producto && i.cantidad>0);
+  if(!cliente || !direccion || !fechaEntrega || items.length===0){
+    statusEl.textContent = 'Falta cliente, dirección, fecha de entrega o al menos un producto.'; statusEl.className='config-status err'; return;
+  }
+  if(!pendingDest || pendingDest.address!==direccion){
+    statusEl.textContent = 'Toca "Ubicar" para localizar la dirección en el mapa antes de guardar.'; statusEl.className='config-status err'; return;
+  }
+  const total = items.reduce((s,i)=> s + i.cantidad*i.precio, 0);
+  statusEl.textContent = 'Guardando…'; statusEl.className='config-status';
+  try{
+    await apiAdd('Pedidos', {
+      Fecha: todayISO(), Cliente:cliente, Telefono:telefono, Direccion:direccion,
+      Lat:pendingDest.lat, Lng:pendingDest.lng, FechaEntrega:fechaEntrega, HoraEntrega:horaEntrega,
+      Detalle:JSON.stringify(items), Total:total, DistanciaKm:pendingDest.distanceKm.toFixed(2), Estado:'Pendiente'
+    });
+    await loadAllData(); render();
+    orderLineItems = []; renderOrderLines();
+    pendingDest = null;
+    document.getElementById('oCliente').value=''; document.getElementById('oTelefono').value='';
+    document.getElementById('oDireccion').value=''; document.getElementById('oHoraEntrega').value='';
+    document.getElementById('geoStatus').textContent=''; document.getElementById('distanceChip').style.display='none';
+    if(destMarker){ orderMapInstance.removeLayer(destMarker); destMarker=null; }
+    if(routeLine){ orderMapInstance.removeLayer(routeLine); routeLine=null; }
+    statusEl.textContent = '¡Pedido guardado!'; statusEl.className='config-status ok'; showToast('Pedido guardado');
+    setTimeout(()=>{ statusEl.textContent=''; }, 2500);
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
+});
+
+function buildOrderMessage(p){
+  let msg = `*El Conuco Fresh Market* 🌱\nPedido para ${p.cliente} — entrega ${p.fechaEntrega}${p.horaEntrega?' '+p.horaEntrega:''}\nDirección: ${p.direccion}\n\n`;
+  p.items.forEach(i=>{ msg += `• ${i.cantidad} x ${i.producto} — ${fmt(i.cantidad*i.precio)}\n`; });
+  msg += `\n*Total: ${fmt(p.total)}*`;
+  return msg;
+}
+function orderWhatsappLink(p){
+  const text = encodeURIComponent(buildOrderMessage(p));
+  let phone = (p.telefono||'').replace(/[^0-9]/g,'');
+  if(phone && phone.length===10) phone = '1'+phone;
+  return phone ? `https://wa.me/${phone}?text=${text}` : `https://wa.me/?text=${text}`;
+}
+function nextOrderStatus(estado){
+  return estado==='Pendiente' ? 'EnCamino' : estado==='EnCamino' ? 'Entregado' : 'Pendiente';
+}
+function orderStatusLabel(estado){
+  return estado==='EnCamino' ? 'En camino' : estado==='Entregado' ? 'Entregado' : 'Pendiente';
+}
+function renderOrderList(){
+  const el = document.getElementById('orderList');
+  if(DATA.pedidos.length===0){ el.innerHTML = '<div class="empty-note">Aún no has creado pedidos. Usa el formulario de arriba para registrar el primero.</div>'; return; }
+  const sorted = [...DATA.pedidos].sort((a,b)=> (a.fechaEntrega||'').localeCompare(b.fechaEntrega||''));
+  el.innerHTML = sorted.map(p=>`
+    <div class="order-card" data-row="${p._row}">
+      <div class="order-top">
+        <div><div class="o-title">${p.cliente}${p.telefono?' · '+p.telefono:''}</div><div class="o-sub">${p.direccion}</div></div>
+        <span class="qc-status ${p.estado}">${orderStatusLabel(p.estado)}</span>
+      </div>
+      <div class="order-meta">
+        <span>📅 Entrega: <b>${p.fechaEntrega}${p.horaEntrega?' · '+p.horaEntrega:''}</b></span>
+        <span>📍 Distancia: <b>${p.distanciaKm ? p.distanciaKm.toFixed(1)+' km' : '—'}</b></span>
+        <span>🧾 Total: <b>${fmt(p.total)}</b></span>
+      </div>
+      <ul style="margin:10px 0 4px;padding-left:18px;font-size:13px;color:#4a4030;">${p.items.map(i=>`<li>${i.cantidad} x ${i.producto}</li>`).join('')}</ul>
+      <div class="qc-actions">
+        <button class="btn-mini view-map-btn" data-row="${p._row}" style="background:var(--cibao-green);">Ver en mapa</button>
+        <a class="btn-mini whatsapp-btn" style="background:#25D366;text-decoration:none;display:inline-flex;align-items:center;gap:6px;" href="${orderWhatsappLink(p)}" target="_blank" rel="noopener">WhatsApp</a>
+        ${p.estado!=='Entregado' ? `<button class="btn-mini gold advance-status-btn" data-row="${p._row}">Marcar ${orderStatusLabel(nextOrderStatus(p.estado)).toLowerCase()}</button>` : ''}
+        <button class="btn-mini danger del-order-btn" data-row="${p._row}">Eliminar</button>
+      </div>
+    </div>`).join('');
+
+  el.querySelectorAll('.view-map-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const p = DATA.pedidos.find(x=>String(x._row)===btn.dataset.row);
+      if(!p || !p.lat || !p.lng) return;
+      goto('pedidos');
+      initOrderMap();
+      drawRouteOnMap(ORIGIN.lat, ORIGIN.lng, p.lat, p.lng, [[ORIGIN.lat,ORIGIN.lng],[p.lat,p.lng]]);
+      document.getElementById('distanceChip').style.display = 'inline-flex';
+      document.getElementById('distanceValue').textContent = (p.distanciaKm||0).toFixed(1) + ' km';
+    });
+  });
+  el.querySelectorAll('.advance-status-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const p = DATA.pedidos.find(x=>String(x._row)===btn.dataset.row);
+      if(!p) return;
+      btn.disabled = true;
+      try{
+        await apiReplace('Pedidos', p._row, {
+          Fecha:p.fecha, Cliente:p.cliente, Telefono:p.telefono, Direccion:p.direccion, Lat:p.lat, Lng:p.lng,
+          FechaEntrega:p.fechaEntrega, HoraEntrega:p.horaEntrega, Detalle:JSON.stringify(p.items), Total:p.total,
+          DistanciaKm:p.distanciaKm, Estado:nextOrderStatus(p.estado)
+        });
+        await loadAllData(); render(); showToast('Estado actualizado');
+      }catch(err){ showToast('No se pudo actualizar: ' + (err && err.message ? err.message : 'error desconocido'),'error'); btn.disabled=false; }
+    });
+  });
+  el.querySelectorAll('.del-order-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      try{ await apiDelete('Pedidos', btn.dataset.row); await loadAllData(); render(); }
+      catch(e){ showToast('No se pudo eliminar: ' + (e && e.message ? e.message : 'error desconocido'),'error'); }
+    });
+  });
+}
+
+document.getElementById('saveOriginBtn').addEventListener('click', async ()=>{
+  const statusEl = document.getElementById('originStatus');
+  const address = document.getElementById('originAddressInput').value.trim();
+  if(!address){ statusEl.textContent = 'Escribe una dirección primero.'; statusEl.className='config-status err'; return; }
+  statusEl.textContent = 'Buscando…'; statusEl.className='config-status';
+  try{
+    const geo = await geocodeAddress(address + (address.toLowerCase().includes('dominicana') ? '' : ', República Dominicana'));
+    await saveOriginConfig(address, geo.lat, geo.lng);
+    moveOriginMarker();
+    statusEl.textContent = '✓ Punto de salida actualizado.'; statusEl.className='config-status ok'; showToast('Punto de salida guardado');
+  }catch(err){ statusEl.textContent = err && err.message ? err.message : 'No se pudo ubicar esa dirección.'; statusEl.className='config-status err'; }
+});
 
 /* ================= CLIENTES ================= */
 document.getElementById('form-cliente').addEventListener('submit', async (e)=>{
@@ -1566,7 +1958,7 @@ document.getElementById('form-cliente').addEventListener('submit', async (e)=>{
     e.target.reset();
     statusEl.textContent = '¡Cliente agregado!'; statusEl.className='config-status ok'; showToast('Cliente agregado');
     setTimeout(()=>{ statusEl.textContent=''; }, 2000);
-  }catch(err){ statusEl.textContent = 'No se pudo guardar.'; statusEl.className='config-status err'; }
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
 });
 
 function clientStats(nombre){
@@ -1642,7 +2034,7 @@ document.getElementById('form-recurrente').addEventListener('submit', async (e)=
     e.target.reset();
     statusEl.textContent = '¡Pedido recurrente creado!'; statusEl.className='config-status ok'; showToast('Pedido recurrente creado');
     setTimeout(()=>{ statusEl.textContent=''; }, 2500);
-  }catch(err){ statusEl.textContent = 'No se pudo guardar.'; statusEl.className='config-status err'; }
+  }catch(err){ statusEl.textContent = 'No se pudo guardar: ' + (err && err.message ? err.message : 'error desconocido'); statusEl.className='config-status err'; }
 });
 
 function nextDateFrom(dateStr, freq){
@@ -1878,6 +2270,22 @@ document.getElementById('globalSearch').addEventListener('input', (e)=>{
   }else if(activeView==='view-productos'){
     document.getElementById('productoFilter').value = e.target.value;
     renderProductTable();
+  }else if(activeView==='view-cotizaciones'){
+    document.querySelectorAll('#quoteList .quote-card').forEach(c=>{
+      c.style.display = q==='' || c.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }else if(activeView==='view-pedidos'){
+    document.querySelectorAll('#orderList .order-card').forEach(c=>{
+      c.style.display = q==='' || c.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }else if(activeView==='view-boxes'){
+    document.querySelectorAll('#boxList .quote-card').forEach(c=>{
+      c.style.display = q==='' || c.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }else if(activeView==='view-recurrentes'){
+    document.querySelectorAll('#recurrentesList .recur-card').forEach(c=>{
+      c.style.display = q==='' || c.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
   }else{
     ['#ledgerList','#fullLedgerList','#reportLedger'].forEach(sel=>{
       document.querySelectorAll(sel+' .ticket').forEach(t=>{
@@ -1910,10 +2318,12 @@ document.getElementById('saveConfigBtn').addEventListener('click', async ()=>{
 /* ---- init ---- */
 (async function init(){
   await loadConfig();
+  await loadOrigin();
   const today = todayISO();
   document.querySelectorAll('input[type=date]').forEach(i=>i.value=today);
   addQuoteLine();
   addBoxLine();
+  addOrderLine();
   populateReportSelectors();
 
   if(!SCRIPT_URL){
